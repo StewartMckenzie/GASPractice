@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
+#include "AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
 #include "GASPracticeCharacter.generated.h"
 
 UCLASS(config=Game)
-class AGASPracticeCharacter : public ACharacter
+class AGASPracticeCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -19,7 +21,7 @@ class AGASPracticeCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 public:
-	AGASPracticeCharacter();
+	AGASPracticeCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -28,6 +30,9 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Abilities",meta=(AllowPrivateAccess= "true"))
+	class UAbilitySystemComponent* AbilitySystem;
 
 protected:
 
@@ -62,6 +67,9 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void BeginPlay() override;
 
 public:
 	/** Returns CameraBoom subobject **/

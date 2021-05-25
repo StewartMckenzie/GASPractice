@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////
 // AGASPracticeCharacter
 
-AGASPracticeCharacter::AGASPracticeCharacter()
+AGASPracticeCharacter::AGASPracticeCharacter(const class FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -42,7 +42,7 @@ AGASPracticeCharacter::AGASPracticeCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
+	AbilitySystem= CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -74,6 +74,17 @@ void AGASPracticeCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AGASPracticeCharacter::OnResetVR);
+}
+
+UAbilitySystemComponent* AGASPracticeCharacter::GetAbilitySystemComponent() const
+{
+	return  AbilitySystem;
+}
+
+void AGASPracticeCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
 }
 
 
