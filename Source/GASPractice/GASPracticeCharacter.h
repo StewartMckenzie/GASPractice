@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "PlayerAttributes.h"
 #include "GameFramework/Character.h"
 #include "GASPracticeCharacter.generated.h"
 
@@ -31,9 +32,28 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	//Create a gameplay ability system component
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Abilities",meta=(AllowPrivateAccess= "true"))
 	class UAbilitySystemComponent* AbilitySystem;
 
+	//create slot for a attribute table in our blueprint
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Abilities")
+UDataTable* AttributeDataTable;
+
+	//a flag to tripper our debug attributes/abilities
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Abilities | Debugging")
+bool bAttributesDebugging;
+
+	//an array to hold all of our attributes that we want to debug
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Abilities | Debugging")
+	TArray<TSubclassOf<class UGameplayAbility>> DebuggingPassiveAbilities;
+
+
+public:
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -67,14 +87,12 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+
+	//Function to get out ability system comopnents
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	virtual void BeginPlay() override;
 
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
 };
 

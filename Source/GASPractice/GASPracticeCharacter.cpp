@@ -2,6 +2,7 @@
 
 #include "GASPracticeCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "PlayerAttributes.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -42,6 +43,8 @@ AGASPracticeCharacter::AGASPracticeCharacter(const class FObjectInitializer& Obj
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	//create a default the ability system component as a default subobject 
 	AbilitySystem= CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -84,7 +87,24 @@ UAbilitySystemComponent* AGASPracticeCharacter::GetAbilitySystemComponent() cons
 void AGASPracticeCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	//is we have an ability system component initialize the stats from our data table
+if(AbilitySystem)
+{
+	const UAttributeSet* Attributes = AbilitySystem->InitStats(UPlayerAttributes::StaticClass(),AttributeDataTable);
+}
+//if our debugging flag is triggered 
+	if(bAttributesDebugging)
+	{
+		//loop over our array of attributes/abilities 
+		for(size_t i =0;i<DebuggingPassiveAbilities.Num();i++)
+		{
+			//Give the ability system the ability at this index and save it as a refrence
+			FGameplayAbilitySpecHandle specHandle = AbilitySystem->GiveAbility(FGameplayAbilitySpec(DebuggingPassiveAbilities[i].GetDefaultObject(),1,0));
+			//try to activate that ability on the server (This doesn't remove the ability after it fires, "GiveAbilityAndActivateOnce" does this in one line ,but removes the ability after it is called )
+			AbilitySystem->CallServerTryActivateAbility(specHandle,false,FPredictionKey());
 
+		}
+	}
 }
 
 
