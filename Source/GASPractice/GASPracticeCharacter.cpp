@@ -104,6 +104,15 @@ if(AbilitySystem)
 			AbilitySystem->CallServerTryActivateAbility(specHandle,false,FPredictionKey());
 
 		}
+		for(size_t i =0;i<StartingPassiveAbilities.Num();i++)
+		{
+		
+			//Give the ability system the ability at this index and save it as a refrence
+			FGameplayAbilitySpecHandle specHandle = AbilitySystem->GiveAbility(FGameplayAbilitySpec(StartingPassiveAbilities[i].GetDefaultObject(),1,0));
+			//try to activate that ability on the server (This doesn't remove the ability after it fires, "GiveAbilityAndActivateOnce" does this in one line ,but removes the ability after it is called )
+			AbilitySystem->CallServerTryActivateAbility(specHandle,false,FPredictionKey());
+
+		}
 	}
 }
 

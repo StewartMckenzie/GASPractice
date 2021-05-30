@@ -47,6 +47,10 @@ bool bAttributesDebugging;
 	//an array to hold all of our attributes that we want to debug
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Abilities | Debugging")
 	TArray<TSubclassOf<class UGameplayAbility>> DebuggingPassiveAbilities;
+	
+		//an array to hold all of our starting passive abilities
+    	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Abilities")
+    	TArray<TSubclassOf<class UGameplayAbility>> StartingPassiveAbilities;
 
 
 public:
